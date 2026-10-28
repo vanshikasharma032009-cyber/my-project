@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1B4F72;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2E86C1;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#F39C12;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E67E22;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="95" fill="url(#logoGrad)"/>
+  <circle cx="100" cy="100" r="88" fill="none" stroke="url(#accentGrad)" stroke-width="4"/>
+  <text x="100" y="85" font-family="Georgia, serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle" letter-spacing="1.5">BAL VIKAS</text>
+  <text x="100" y="102" font-family="Georgia, serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle" letter-spacing="1.5">GLOBAL</text>
+  <text x="100" y="119" font-family="Georgia, serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle" letter-spacing="1.5">SCHOOL</text>
+  <ellipse cx="100" cy="145" rx="45" ry="18" fill="url(#accentGrad)"/>
+  <text x="100" y="150" font-family="Arial, sans-serif" font-size="10" font-weight="600" fill="#1B4F72" text-anchor="middle">Kaithal, Haryana</text>
+  <path d="M60 100 Q100 70 140 100" fill="none" stroke="url(#accentGrad)" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="60" cy="100" r="4" fill="url(#accentGrad)"/>
+  <circle cx="140" cy="100" r="4" fill="url(#accentGrad)"/>
+</svg>
