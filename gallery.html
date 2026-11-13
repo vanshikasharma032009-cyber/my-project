@@ -273,32 +273,30 @@
       </div>
     </section>
 
-    <section class="section" style="background: var(--primary-dark); color: var(--white);" aria-labelledby="video-title">
-      <div class="container" style="text-align: center;">
-        <h2 id="video-title" class="section-title" style="color: var(--white);">Video Gallery</h2>
-        <p class="section-subtitle" style="color: rgba(255,255,255,0.8);">Watch our school events, virtual tours, and student achievements.</p>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 40px;">
-          <div style="background: rgba(255,255,255,0.1); border-radius: var(--radius-lg); overflow: hidden; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition);">
-            <div style="text-align: center; padding: 24px;">
-              <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor" style="color: var(--accent); margin-bottom: 16px;"><path d="M23 7V5a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M8 5v14l11-7z"/></svg>
-              <h3 style="color: var(--white);">Campus Tour 2024</h3>
-              <p style="color: rgba(255,255,255,0.7);">Virtual walkthrough of our facilities</p>
+    <section class="section video-gallery-section" style="background: var(--primary-dark); color: var(--white);" aria-labelledby="video-title">
+      <div class="container">
+        <div class="section-header" style="text-align: center;">
+          <h2 id="video-title" class="section-title" style="color: var(--white);">Video Gallery</h2>
+          <p class="section-subtitle" style="color: rgba(255,255,255,0.8);">Relive special moments and celebrations at Bal Vikas Global School.</p>
+        </div>
+        <div class="video-gallery-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 24px; max-width: 900px; margin: 0 auto;">
+          <article class="school-video-card" style="min-width: 0; overflow: hidden; border-radius: var(--radius-lg); background: rgba(255,255,255,0.1); box-shadow: var(--shadow-lg);">
+            <div style="position: relative; width: 100%; aspect-ratio: 16 / 9; background: #102b40;">
+              <iframe
+                src="https://www.youtube-nocookie.com/embed/_QukEtKnUKw"
+                title="Bal Vikas Global School Function"
+                loading="lazy"
+                style="position: absolute; inset: 0; width: 100%; height: 100%; border: 0;"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen>
+              </iframe>
             </div>
-          </div>
-          <div style="background: rgba(255,255,255,0.1); border-radius: var(--radius-lg); overflow: hidden; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition);">
-            <div style="text-align: center; padding: 24px;">
-              <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor" style="color: var(--accent); margin-bottom: 16px;"><path d="M23 7V5a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M8 5v14l11-7z"/></svg>
-              <h3 style="color: var(--white);">Annual Day Highlights</h3>
-              <p style="color: rgba(255,255,255,0.7);">Cultural performances & awards</p>
+            <div style="padding: 20px 22px;">
+              <h3 style="color: var(--white); margin: 0 0 8px;">School Function Highlights</h3>
+              <p style="color: rgba(255,255,255,0.78); margin: 0;">Watch memorable performances and celebrations from our school.</p>
             </div>
-          </div>
-          <div style="background: rgba(255,255,255,0.1); border-radius: var(--radius-lg); overflow: hidden; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition);">
-            <div style="text-align: center; padding: 24px;">
-              <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor" style="color: var(--accent); margin-bottom: 16px;"><path d="M23 7V5a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M8 5v14l11-7z"/></svg>
-              <h3 style="color: var(--white);">Sports Day 2024</h3>
-              <p style="color: rgba(255,255,255,0.7);">Athletic events & marching past</p>
-            </div>
-          </div>
+          </article>
         </div>
       </div>
     </section>
