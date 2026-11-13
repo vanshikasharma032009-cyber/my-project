@@ -2617,9 +2617,9 @@ ul {
   margin-bottom: 22px;
 }
 
-.footer-about .logo-name,
-.footer-about .logo-tagline {
-  color: #fff;
+.footer .footer-about .logo-name,
+.footer .footer-about .logo-tagline {
+  color: #fff !important;
 }
 
 .footer-about .logo-img {
