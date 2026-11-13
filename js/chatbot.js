@@ -69,7 +69,7 @@ const FAQ_LIST = [
     category: "Gallery"
   },
   {
-    keywords: ["about", "school", "history", "vision", "mission", "जानकारी"],
+    keywords: ["about", "history", "vision", "mission", "जानकारी", "स्कूल के बारे में"],
     question: ["about"],
     answer: "English: Bal Vikas Global School is a co-educational, English-medium CBSE Senior Secondary school in Kaithal, Haryana. Visit the About page to learn more.\nहिन्दी: बाल विकास ग्लोबल स्कूल कैथल, हरियाणा का एक सह-शिक्षा, अंग्रेजी माध्यम सीबीएसई वरिष्ठ माध्यमिक विद्यालय है। अधिक जानने के लिए About page देखें।",
     category: "About"
@@ -351,28 +351,50 @@ class Chatbot {
 
   findAnswer(userMessage) {
     const normalized = this.normalizeText(userMessage);
+    const genericWords = new Set([
+      'school', 'website', 'about', 'please', 'tell', 'me', 'what', 'which',
+      'where', 'when', 'how', 'does', 'can', 'are', 'is', 'the', 'and',
+      'mujhe', 'batao', 'kya', 'kaise', 'hai', 'hain', 'ke', 'ki', 'ka',
+      'ko', 'mein', 'me', 'par', 'aur', 'ye', 'yeh', 'mere', 'meri'
+    ]);
+    const questionWords = normalized.split(/\s+/).filter(word =>
+      word.length > 2 && !genericWords.has(word)
+    );
 
-    // Prefer relevant facts from the actual school pages over broad FAQ keywords.
+    // First try matching meaningful words against the actual school page text.
     const webMatch = this.searchWebsiteContext(userMessage);
-    if (webMatch) {
+    if (webMatch && questionWords.length > 0) {
       const pageNames = webMatch.pages.map(p => p.replace('.html', ''));
-      const source = pageNames.length
-        ? ` (Source: ${pageNames.join(', ')} page)`
-        : '';
+      const source = pageNames.length ? ` (Source: ${pageNames.join(', ')} page)` : '';
       return webMatch.answer + "\\nयह जानकारी स्कूल की वेबसाइट से ली गई है।" + source;
     }
 
+    // Score every FAQ and select the best specific topic, never a generic "school" match.
+    let bestFaq = null;
+    let bestScore = 0;
     for (const faq of FAQ_LIST) {
       if (faq.isGreeting) continue;
+      let score = 0;
       for (const keyword of faq.keywords) {
-        const normalizedKeyword = this.normalizeText(keyword);
-        if (normalizedKeyword && normalized.includes(normalizedKeyword)) {
-          return faq.answer;
+        const key = this.normalizeText(keyword);
+        if (!key || key.split(/\s+/).some(word => genericWords.has(word))) continue;
+        if (normalized.includes(key)) score = Math.max(score, key.split(/\s+/).length + 1);
+        else {
+          const parts = key.split(/\s+/).filter(word => word.length > 2);
+          const matched = parts.filter(word => questionWords.includes(word)).length;
+          if (parts.length && matched / parts.length >= 0.5) {
+            score = Math.max(score, matched);
+          }
         }
       }
+      if (score > bestScore) {
+        bestScore = score;
+        bestFaq = faq;
+      }
     }
+    if (bestFaq) return bestFaq.answer;
 
-    return "माफ़ कीजिए, इस सवाल की पक्की जानकारी वेबसाइट पर नहीं मिली। कृपया Contact page देखें या स्कूल कार्यालय पर +91-1746-250100 पर संपर्क करें।";
+    return "माफ़ कीजिए, इस सवाल की सही जानकारी वेबसाइट पर नहीं मिली। कृपया Contact page देखें या स्कूल कार्यालय से +91-1746-250100 पर संपर्क करें।";
   }
 
   async processMessage(message) {
