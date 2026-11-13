@@ -2597,6 +2597,11 @@ ul {
   margin-bottom: 22px;
 }
 
+.footer-about .logo-name,
+.footer-about .logo-tagline {
+  color: #fff;
+}
+
 .footer-about .logo-img {
   border: 2px solid rgba(255, 255, 255, 0.75);
   border-radius: 12px;
