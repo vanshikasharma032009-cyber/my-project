@@ -379,9 +379,12 @@ class Chatbot {
     this.showTyping();
 
     try {
-      // Wait until the website pages have been read before searching them.
-      // Previously the local search ran immediately, often before this context was ready.
-      await this.websiteContextPromise;
+      // Do not let slow page fetches prevent the chatbot from replying.
+      // FAQ answers are available immediately; page context is used if it loads quickly.
+      await Promise.race([
+        this.websiteContextPromise,
+        new Promise(resolve => setTimeout(resolve, 1200))
+      ]);
 
       if (GROQ_PROXY_URL && GROQ_PROXY_URL !== "YOUR_CLOUDFLARE_WORKER_URL_HERE") {
         await this.callGroqAPI(message);
@@ -392,12 +395,13 @@ class Chatbot {
       this.addMessage(fillPlaceholders(answer), 'bot');
     } catch (error) {
       console.error('Chatbot response error:', error);
-      this.addMessage(fillPlaceholders(this.findAnswer(message)), 'bot');
+      const answer = this.findAnswer(message);
+      this.addMessage(fillPlaceholders(answer), 'bot');
     } finally {
       this.hideTyping();
     }
   }
-  
+
   async callGroqAPI(message) {
     try {
       const response = await fetch(GROQ_PROXY_URL, {
@@ -408,10 +412,7 @@ class Chatbot {
         body: JSON.stringify({
           message: message,
           history: this.messages.slice(0, -1).slice(-8),
-          websiteContext: (await this.websiteContextPromise)
-            .map(p => `${p.page}: ${p.text}`)
-            .join('\n')
-            .slice(0, 24000)
+          websiteContext: String(await this.websiteContextPromise || '').slice(0, 24000)
         })
       });
 
