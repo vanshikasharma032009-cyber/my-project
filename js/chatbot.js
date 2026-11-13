@@ -305,8 +305,9 @@ class Chatbot {
   }
   
   normalizeText(text) {
-    return text.toLowerCase()
-      .replace(/[^\w\s]/g, ' ')
+    // Keep Hindi and other Unicode letters so Hindi/Hinglish questions can be matched.
+    return text.toLocaleLowerCase()
+      .replace(/[^\p{L}\p{M}\p{N}\s]/gu, ' ')
       .replace(/\s+/g, ' ')
       .trim();
   }
@@ -378,19 +379,26 @@ class Chatbot {
     return "English: I'm sorry, I don't have information about that. For assistance, please call our school office at PHONE_NUMBER or email us at EMAIL.\nहिन्दी: मुझे इसके बारे में जानकारी नहीं है। सहायता के लिए, कृपया हमारे स्कूल कार्यालय पर PHONE_NUMBER पर कॉल करें या EMAIL पर ईमेल करें।";
   }
   
-  processMessage(message) {
+  async processMessage(message) {
     this.showTyping();
-    
-    // Try Groq API first if proxy URL is configured
-    if (GROQ_PROXY_URL && GROQ_PROXY_URL !== "YOUR_CLOUDFLARE_WORKER_URL_HERE") {
-      this.callGroqAPI(message);
-    } else {
-      setTimeout(() => {
-        this.hideTyping();
-        const answer = this.findAnswer(message);
-        const filledAnswer = fillPlaceholders(answer);
-        this.addMessage(filledAnswer, 'bot');
-      }, 800);
+
+    try {
+      // Wait until the website pages have been read before searching them.
+      // Previously the local search ran immediately, often before this context was ready.
+      await this.websiteContextPromise;
+
+      if (GROQ_PROXY_URL && GROQ_PROXY_URL !== "YOUR_CLOUDFLARE_WORKER_URL_HERE") {
+        await this.callGroqAPI(message);
+        return;
+      }
+
+      const answer = this.findAnswer(message);
+      this.addMessage(fillPlaceholders(answer), 'bot');
+    } catch (error) {
+      console.error('Chatbot response error:', error);
+      this.addMessage(fillPlaceholders(this.findAnswer(message)), 'bot');
+    } finally {
+      this.hideTyping();
     }
   }
   
@@ -422,8 +430,9 @@ class Chatbot {
         throw new Error(data.error || 'Chatbot service returned no reply');
       }
     } catch (error) {
-      console.error('Chatbot API error:', error);
-      this.addMessage("Sorry, the chatbot is temporarily unavailable. Please contact the school through the Contact page.", 'bot');
+      console.error('Chatbot API error; using the website's local information instead:', error);
+      // Keep the chatbot useful even when the optional AI proxy is not deployed or is offline.
+      this.addMessage(fillPlaceholders(this.findAnswer(message)), 'bot');
     } finally {
       this.hideTyping();
     }
