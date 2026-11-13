@@ -840,6 +840,26 @@ ul {
   height: 32px;
 }
 
+.academics-page .academic-icon.academic-photo {
+  height: 220px;
+  padding: 0;
+  overflow: hidden;
+  background: #eaf0f4;
+}
+
+.academics-page .academic-icon.academic-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.4s ease;
+}
+
+.academics-page .academic-card:hover .academic-icon.academic-photo img {
+  transform: scale(1.04);
+}
+
 .academic-content {
   padding: 28px;
 }
