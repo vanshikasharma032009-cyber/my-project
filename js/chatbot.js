@@ -318,67 +318,63 @@ class Chatbot {
     }
 
     const normalized = this.normalizeText(query);
-    const keywords = normalized.split(/\s+/).filter(k => k.length > 2);
-    if (keywords.length === 0) {
-      return null;
-    }
+    const stopWords = new Set([
+      'the', 'and', 'for', 'you', 'your', 'what', 'which', 'where', 'when',
+      'how', 'does', 'can', 'are', 'is', 'this', 'that', 'about', 'tell',
+      'please', 'school', 'mujhe', 'batao', 'kya', 'kaise', 'hai', 'hain',
+      'ke', 'ki', 'ka', 'ko', 'me', 'mein', 'par', 'aur', 'ek', 'ye',
+      'yeh', 'mera', 'meri', 'mere', 'website'
+    ]);
+    const keywords = normalized.split(/\s+/).filter(k =>
+      k.length > 2 && !stopWords.has(k)
+    );
+    if (keywords.length === 0) return null;
 
     const matches = [];
     for (const {page, text} of this.pagesContext) {
       const sentences = text.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 20);
       for (const s of sentences) {
         const sNorm = this.normalizeText(s);
-        let score = 0;
-        for (const kw of keywords) {
-          if (sNorm.includes(kw)) {
-            score++;
-          }
-        }
-        if (score > 0) {
-          matches.push({page, sentence: s.trim(), score});
-        }
+        const score = keywords.filter(kw => sNorm.includes(kw)).length;
+        if (score > 0) matches.push({page, sentence: s.trim(), score});
       }
     }
 
-    if (matches.length === 0) {
-      return null;
-    }
-
+    if (matches.length === 0) return null;
     matches.sort((a, b) => b.score - a.score);
-    const top = matches.slice(0, 4);
+    const threshold = Math.max(1, Math.ceil(keywords.length * 0.34));
+    const top = matches.filter(m => m.score >= threshold).slice(0, 4);
+    if (top.length === 0) return null;
     const pages = [...new Set(top.map(m => m.page))];
-    const answer = top.map(m => m.sentence).join(' ');
-    return {answer, pages};
+    return {answer: top.map(m => m.sentence).join(' '), pages};
   }
 
   findAnswer(userMessage) {
     const normalized = this.normalizeText(userMessage);
 
-    // Check FAQ list first (instant answers for common questions)
-    for (let faq of FAQ_LIST) {
-      if (faq.isGreeting) continue;
+    // Prefer relevant facts from the actual school pages over broad FAQ keywords.
+    const webMatch = this.searchWebsiteContext(userMessage);
+    if (webMatch) {
+      const pageNames = webMatch.pages.map(p => p.replace('.html', ''));
+      const source = pageNames.length
+        ? ` (Source: ${pageNames.join(', ')} page)`
+        : '';
+      return webMatch.answer + "\\nयह जानकारी स्कूल की वेबसाइट से ली गई है।" + source;
+    }
 
-      for (let keyword of faq.keywords) {
-        if (normalized.includes(this.normalizeText(keyword))) {
+    for (const faq of FAQ_LIST) {
+      if (faq.isGreeting) continue;
+      for (const keyword of faq.keywords) {
+        const normalizedKeyword = this.normalizeText(keyword);
+        if (normalizedKeyword && normalized.includes(normalizedKeyword)) {
           return faq.answer;
         }
       }
     }
 
-    // Search actual website content for the answer
-    const webMatch = this.searchWebsiteContext(userMessage);
-    if (webMatch) {
-      const pageNames = webMatch.pages.map(p => p.replace('.html', ''));
-      const source = pageNames.length > 0
-        ? ` (स्रोत: ${pageNames.join(', ')} पेज)`
-        : '';
-      return webMatch.answer + "\nहिन्दी: ऊपर दी गई जानकारी वेबसाइट से ली गई है।" + source;
-    }
-
-    // If no match found, use fallback
-    return "English: I'm sorry, I don't have information about that. For assistance, please call our school office at PHONE_NUMBER or email us at EMAIL.\nहिन्दी: मुझे इसके बारे में जानकारी नहीं है। सहायता के लिए, कृपया हमारे स्कूल कार्यालय पर PHONE_NUMBER पर कॉल करें या EMAIL पर ईमेल करें।";
+    return "माफ़ कीजिए, इस सवाल की पक्की जानकारी वेबसाइट पर नहीं मिली। कृपया Contact page देखें या स्कूल कार्यालय पर +91-1746-250100 पर संपर्क करें।";
   }
-  
+
   async processMessage(message) {
     this.showTyping();
 
