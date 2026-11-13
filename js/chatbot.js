@@ -21,6 +21,12 @@ const FAQ_LIST = [
     isGreeting: true
   },
   {
+    keywords: ["principal", "head of school", "headmistress", "pradhanacharya", "principal kaun", "principal kon", "प्रिंसिपल", "प्रधानाचार्य"],
+    question: ["principal"],
+    answer: "English: The principal of Bal Vikas Global School is Rajshree Chaudhary.\nहिन्दी: बाल विकास ग्लोबल स्कूल की प्रिंसिपल राजश्री चौधरी हैं।",
+    category: "Principal"
+  },
+  {
     keywords: ["admission", "admit", "apply", "enroll", "registration", "admission kaise", "दाखिला", "प्रवेश"],
     question: ["admission"],
     answer: "English: We welcome applications for the 2026-27 session from Nursery to Class 12. Please see the Admissions page or contact the school for the admission process.\nहिन्दी: हम 2026-27 सत्र के लिए नर्सरी से कक्षा 12 तक आवेदन का स्वागत करते हैं। कृपया Admissions page देखें या स्कूल से संपर्क करें।",
@@ -351,6 +357,17 @@ class Chatbot {
 
   findAnswer(userMessage) {
     const normalized = this.normalizeText(userMessage);
+
+    // Handle greetings as questions too (not only the automatic welcome message).
+    if (/^(hi|hello|hey|namaste|namaskar|hii|helo|नमस्ते|नमस्कार)(\\s|$)/u.test(normalized)) {
+      return "Namaste! Welcome to Bal Vikas Global School. Aap school, principal, admission, fees, classes ya facilities ke baare mein kuch bhi pooch sakte hain.";
+    }
+
+    // Answer verified school facts before fuzzy page-text matching.
+    const principalFaq = FAQ_LIST.find(f => f.category === "Principal");
+    if (principalFaq && principalFaq.keywords.some(keyword => normalized.includes(this.normalizeText(keyword)))) {
+      return principalFaq.answer;
+    }
     const genericWords = new Set([
       'school', 'website', 'about', 'please', 'tell', 'me', 'what', 'which',
       'where', 'when', 'how', 'does', 'can', 'are', 'is', 'the', 'and',
