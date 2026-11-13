@@ -105,39 +105,44 @@ class Chatbot {
 
   async loadWebsiteContext() {
     const pageResults = await Promise.allSettled(SCHOOL_PAGES.map(async page => {
-      const response = await fetch(page, { credentials: 'same-origin' });
-      if (!response.ok) {
-        throw new Error(`Could not load ${page}: ${response.status}`);
-      }
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      try {
+        const response = await fetch(new URL(page, document.baseURI), {
+          credentials: 'same-origin',
+          signal: controller.signal,
+          cache: 'no-cache'
+        });
+        if (!response.ok) throw new Error(`Could not load ${page}: ${response.status}`);
 
-      const html = await response.text();
-      const parsedPage = new DOMParser().parseFromString(html, 'text/html');
-      const main = parsedPage.querySelector('main');
-      if (!main) {
-        throw new Error(`No main content found in ${page}`);
-      }
+        const html = await response.text();
+        const parsedPage = new DOMParser().parseFromString(html, 'text/html');
+        const main = parsedPage.querySelector('main') || parsedPage.body;
+        main.querySelectorAll('script, style, form, nav, footer, header, .chatbot-container, .whatsapp-float').forEach(el => el.remove());
 
-      main.querySelectorAll('script, style, form, nav, footer, .chatbot-container, .whatsapp-float').forEach(element => element.remove());
-      return {page, text: main.textContent.replace(/\s+/g, ' ').trim().slice(0, 4000)};
+        // Keep headings and paragraph boundaries so questions match the right topic.
+        const blocks = [...main.querySelectorAll('h1,h2,h3,h4,p,li,dt,dd')]
+          .map(el => el.textContent.replace(/\\s+/g, ' ').trim())
+          .filter(text => text.length > 24);
+        const text = [...new Set(blocks)].join(' ');
+        return { page, blocks, text: text.slice(0, 7000) };
+      } finally {
+        clearTimeout(timeout);
+      }
     }));
 
-    const pages = pageResults
+    this.pagesContext = pageResults
       .filter(result => result.status === 'fulfilled')
       .map(result => result.value);
 
-    pageResults
-      .filter(result => result.status === 'rejected')
-      .forEach(result => console.error('Chatbot website context error:', result.reason));
+    pageResults.filter(result => result.status === 'rejected')
+      .forEach(result => console.warn('Chatbot could not read a school page:', result.reason));
 
-    if (pages.length === 0) {
-      throw new Error('No school website pages could be loaded for chatbot context');
-    }
-
-    this.pagesContext = pages;
-    return pages.map(p => `${p.page}: ${p.text}`).join('\n').slice(0, 24000);
+    if (!this.pagesContext.length) throw new Error('No school pages could be loaded');
+    return this.pagesContext.map(p => `${p.page}: ${p.text}`).join('\\n').slice(0, 30000);
   }
-  
-  createChatbotHTML() {
+
+    createChatbotHTML() {
     const chatbotHTML = `
       <div class="chatbot-container">
         <button class="chatbot-toggle" id="chatbotToggle" aria-label="Open chat">
@@ -313,118 +318,117 @@ class Chatbot {
   }
 
   searchWebsiteContext(query) {
-    if (!this.pagesContext || this.pagesContext.length === 0) {
-      return null;
-    }
+    if (!this.pagesContext || !this.pagesContext.length) return null;
 
     const normalized = this.normalizeText(query);
     const stopWords = new Set([
-      'the', 'and', 'for', 'you', 'your', 'what', 'which', 'where', 'when',
-      'how', 'does', 'can', 'are', 'is', 'this', 'that', 'about', 'tell',
-      'please', 'school', 'mujhe', 'batao', 'kya', 'kaise', 'hai', 'hain',
-      'ke', 'ki', 'ka', 'ko', 'me', 'mein', 'par', 'aur', 'ek', 'ye',
-      'yeh', 'mera', 'meri', 'mere', 'website'
+      'the','and','for','you','your','what','which','where','when','how','does','can',
+      'are','is','this','that','about','tell','please','school','website','mujhe',
+      'batao','kya','kaise','hai','hain','ke','ki','ka','ko','me','mein','par',
+      'aur','ek','ye','yeh','mera','meri','mere','please','sir','ji'
     ]);
-    const keywords = normalized.split(/\s+/).filter(k =>
-      k.length > 2 && !stopWords.has(k)
-    );
-    if (keywords.length === 0) return null;
+    const words = normalized.split(/\\s+/).filter(w => w.length > 2 && !stopWords.has(w));
+    if (!words.length) return null;
 
+    const synonyms = {
+      'fees':['fee','charges','tuition','शुल्क','फीस'],
+      'fee':['fees','charges','tuition','शुल्क','फीस'],
+      'facility':['facilities','lab','library','sports','transport'],
+      'facilities':['facility','lab','library','sports','transport'],
+      'admission':['admissions','enroll','registration','प्रवेश','दाखिला'],
+      'address':['location','map','पता','स्थान'],
+      'timing':['time','hours','समय'],
+      'contact':['phone','number','email','संपर्क'],
+      'transport':['bus','route','वाहन']
+    };
+    const expanded = new Set(words);
+    words.forEach(word => (synonyms[word] || []).forEach(v => expanded.add(this.normalizeText(v))));
+
+    const pageHints = {
+      'admissions.html':['admission','apply','enroll','registration'],
+      'academics.html':['class','curriculum','subject','cbse','academic'],
+      'facilities.html':['facility','facilities','lab','library','sports','transport','classroom'],
+      'contact.html':['contact','phone','email','address','location','map'],
+      'about.html':['about','vision','mission','history'],
+      'gallery.html':['gallery','photo','event','picture']
+    };
     const matches = [];
-    for (const {page, text} of this.pagesContext) {
-      const sentences = text.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 20);
-      for (const s of sentences) {
-        const sNorm = this.normalizeText(s);
-        const score = keywords.filter(kw => sNorm.includes(kw)).length;
-        if (score > 0) matches.push({page, sentence: s.trim(), score});
+    for (const pageData of this.pagesContext) {
+      for (const block of (pageData.blocks || [pageData.text])) {
+        const candidate = this.normalizeText(block);
+        const hitCount = [...expanded].filter(word => candidate.includes(word)).length;
+        if (!hitCount) continue;
+        const coverage = hitCount / words.length;
+        const hintWords = pageHints[pageData.page] || [];
+        const pageBoost = words.some(w => hintWords.includes(w)) ? 0.35 : 0;
+        const score = coverage + pageBoost + (candidate.includes(normalized) ? 1 : 0);
+        matches.push({page: pageData.page, sentence: block, score, hitCount});
       }
     }
+    matches.sort((a,b) => b.score - a.score || b.hitCount - a.hitCount);
+    if (!matches.length || matches[0].hitCount < 1) return null;
 
-    if (matches.length === 0) return null;
-    matches.sort((a, b) => b.score - a.score);
-    const threshold = Math.max(1, Math.ceil(keywords.length * 0.34));
-    const top = matches.filter(m => m.score >= threshold).slice(0, 4);
-    if (top.length === 0) return null;
-    const pages = [...new Set(top.map(m => m.page))];
-    return {answer: top.map(m => m.sentence).join(' '), pages};
+    const best = matches[0];
+    const selected = matches
+      .filter(m => m.page === best.page && m.score >= Math.max(0.35, best.score * 0.62))
+      .slice(0, 3);
+    return { answer: [...new Set(selected.map(m => m.sentence))].join(' '), pages: [best.page] };
   }
 
-  findAnswer(userMessage) {
+    findAnswer(userMessage) {
     const normalized = this.normalizeText(userMessage);
-    const genericWords = new Set([
-      'school', 'website', 'about', 'please', 'tell', 'me', 'what', 'which',
-      'where', 'when', 'how', 'does', 'can', 'are', 'is', 'the', 'and',
-      'mujhe', 'batao', 'kya', 'kaise', 'hai', 'hain', 'ke', 'ki', 'ka',
-      'ko', 'mein', 'me', 'par', 'aur', 'ye', 'yeh', 'mere', 'meri'
-    ]);
-    const questionWords = normalized.split(/\s+/).filter(word =>
-      word.length > 2 && !genericWords.has(word)
-    );
+    const words = normalized.split(/\\s+/).filter(Boolean);
 
-    // First try matching meaningful words against the actual school page text.
+    // Specific intent aliases support common Hindi and Hinglish questions.
+    const intents = [
+      { id:'admission', terms:['admission','admissions','admit','apply','application','enroll','enrollment','registration','प्रवेश','दाखिला','दाखिले'] },
+      { id:'fees', terms:['fee','fees','फीस','शुल्क','charges','tuition'] },
+      { id:'timing', terms:['timing','time','hours','समय','टाइमिंग','कब खुलता','कब बंद'] },
+      { id:'classes', terms:['class','classes','nursery','kg','lkg','ukg','cbse','कक्षा','क्लास'] },
+      { id:'facilities', terms:['facility','facilities','lab','laboratory','library','sports','playground','bus','transport','computer','classroom','सुविधा','सुविधाएं','लैब','पुस्तकालय','खेल'] },
+      { id:'contact', terms:['contact','phone','mobile','number','call','email','संपर्क','फोन','नंबर','ईमेल'] },
+      { id:'address', terms:['address','location','where','map','पता','स्थान','कहां','कहाँ'] },
+      { id:'gallery', terms:['gallery','photo','photos','event','events','picture','गैलरी','तस्वीर','कार्यक्रम'] },
+      { id:'about', terms:['about','vision','mission','history','परिचय','इतिहास'] }
+    ];
+    const matchedIntent = intents
+      .map(intent => ({...intent, score:intent.terms.reduce((n,t) => n + (normalized.includes(this.normalizeText(t)) ? 1 : 0), 0)}))
+      .sort((a,b) => b.score-a.score)[0];
+
+    // Prefer relevant live page content. Do not return an unrelated FAQ on a weak match.
     const webMatch = this.searchWebsiteContext(userMessage);
-    if (webMatch && questionWords.length > 0) {
-      const pageNames = webMatch.pages.map(p => p.replace('.html', ''));
-      const source = pageNames.length ? ` (Source: ${pageNames.join(', ')} page)` : '';
-      return webMatch.answer + "\\nयह जानकारी स्कूल की वेबसाइट से ली गई है।" + source;
+    if (webMatch && (webMatch.answer.length > 0)) {
+      return `${webMatch.answer}\\n\\n(Source: ${webMatch.pages[0].replace('.html','')} page)`;
     }
 
-    // Score every FAQ and select the best specific topic, never a generic "school" match.
-    let bestFaq = null;
-    let bestScore = 0;
-    for (const faq of FAQ_LIST) {
-      if (faq.isGreeting) continue;
-      let score = 0;
-      for (const keyword of faq.keywords) {
-        const key = this.normalizeText(keyword);
-        if (!key || key.split(/\s+/).some(word => genericWords.has(word))) continue;
-        if (normalized.includes(key)) score = Math.max(score, key.split(/\s+/).length + 1);
-        else {
-          const parts = key.split(/\s+/).filter(word => word.length > 2);
-          const matched = parts.filter(word => questionWords.includes(word)).length;
-          if (parts.length && matched / parts.length >= 0.5) {
-            score = Math.max(score, matched);
-          }
-        }
-      }
-      if (score > bestScore) {
-        bestScore = score;
-        bestFaq = faq;
-      }
+    if (matchedIntent && matchedIntent.score > 0) {
+      const faq = FAQ_LIST.find(item => item.category &&
+        this.normalizeText(item.category) === matchedIntent.id);
+      if (faq) return faq.answer;
     }
-    if (bestFaq) return bestFaq.answer;
 
-    return "माफ़ कीजिए, इस सवाल की सही जानकारी वेबसाइट पर नहीं मिली। कृपया Contact page देखें या स्कूल कार्यालय से +91-1746-250100 पर संपर्क करें।";
+    if (words.some(w => ['hello','hi','hey','namaste','नमस्ते'].includes(w))) {
+      return FAQ_LIST.find(f => f.isGreeting).answer;
+    }
+    return "माफ़ कीजिए, इस सवाल की सही जानकारी मुझे स्कूल की वेबसाइट पर नहीं मिली। आप Admission, Fees, Classes, Facilities, Transport, Timing या Contact के बारे में पूछ सकते हैं। अधिक जानकारी के लिए स्कूल कार्यालय: +91-1746-250100।";
   }
 
-  async processMessage(message) {
+    async processMessage(message) {
     this.showTyping();
-
     try {
-      // Do not let slow page fetches prevent the chatbot from replying.
-      // FAQ answers are available immediately; page context is used if it loads quickly.
-      await Promise.race([
-        this.websiteContextPromise,
-        new Promise(resolve => setTimeout(resolve, 1200))
-      ]);
-
-      if (GROQ_PROXY_URL && GROQ_PROXY_URL !== "YOUR_CLOUDFLARE_WORKER_URL_HERE") {
-        await this.callGroqAPI(message);
-        return;
-      }
-
+      // Wait for school pages to be indexed (each fetch has a 5-second timeout).
+      await this.websiteContextPromise;
       const answer = this.findAnswer(message);
       this.addMessage(fillPlaceholders(answer), 'bot');
     } catch (error) {
-      console.error('Chatbot response error:', error);
-      const answer = this.findAnswer(message);
-      this.addMessage(fillPlaceholders(answer), 'bot');
+      console.warn('Chatbot is using its built-in school FAQ:', error);
+      this.addMessage(fillPlaceholders(this.findAnswer(message)), 'bot');
     } finally {
       this.hideTyping();
     }
   }
 
-  async callGroqAPI(message) {
+    async callGroqAPI(message) {
     try {
       const response = await fetch(GROQ_PROXY_URL, {
         method: 'POST',
