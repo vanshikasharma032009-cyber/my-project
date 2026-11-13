@@ -146,7 +146,7 @@ class Chatbot {
     const chatbotHTML = `
       <div class="chatbot-container">
         <button class="chatbot-toggle" id="chatbotToggle" aria-label="Open chat">
-          <img class="chatbot-toggle-image" src="images/images%20%28123.jpg" alt="">
+          <img class="chatbot-toggle-image" src="images/bal-vikas-logo.webp" alt="">
         </button>
         <div class="chatbot-window" id="chatbotWindow">
           <div class="chatbot-header">
