@@ -50,6 +50,16 @@ function initNavigation() {
         document.body.style.overflow = '';
       }
     });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && navMenu.classList.contains('active')) {
+        mobileMenuBtn.classList.remove('active');
+        navMenu.classList.remove('active');
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+        mobileMenuBtn.focus();
+      }
+    });
   }
 
   const dropdowns = document.querySelectorAll('.nav-dropdown');
