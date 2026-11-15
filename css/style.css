@@ -2921,3 +2921,42 @@ section[id], div[id] { scroll-margin-top: 96px; }
     padding: 32px 18px 42px;
   }
 }
+
+
+/* Official YouTube and Facebook shortcuts fixed on the left side */
+.floating-social-links {
+  position: fixed;
+  left: 0;
+  top: 42%;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.floating-social-link {
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  border-radius: 0 9px 9px 0;
+  box-shadow: 0 3px 12px rgba(0,0,0,.22);
+  transition: width .2s ease, transform .2s ease, filter .2s ease;
+}
+.floating-social-link:hover {
+  width: 54px;
+  filter: brightness(1.08);
+}
+.floating-social-link svg {
+  width: 25px;
+  height: 25px;
+  display: block;
+}
+.floating-social-youtube { background: #FF0033; }
+.floating-social-facebook { background: #1877F2; }
+@media (max-width: 600px) {
+  .floating-social-links { top: 40%; }
+  .floating-social-link { width: 40px; height: 40px; }
+  .floating-social-link svg { width: 22px; height: 22px; }
+}
