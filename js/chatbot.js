@@ -77,8 +77,104 @@ const FAQ_LIST = [
   {
     keywords: ["about", "history", "vision", "mission", "जानकारी", "स्कूल के बारे में"],
     question: ["about"],
-    answer: "English: Bal Vikas Global School is a co-educational, English-medium CBSE Senior Secondary school in Kaithal, Haryana. Visit the About page to learn more.\nहिन्दी: बाल विकास ग्लोबल स्कूल कैथल, हरियाणा का एक सह-शिक्षा, अंग्रेजी माध्यम सीबीएसई वरिष्ठ माध्यमिक विद्यालय है। अधिक जानने के लिए About page देखें।",
+    answer: "English: Bal Vikas Global School is a co-educational, English-medium CBSE Senior Secondary school in Kaithal, Haryana, managed by Hari Om Education & Social Welfare Society. CBSE Affiliation No. 531726.\nहिन्दी: बाल विकास ग्लोबल स्कूल कैथल, हरियाणा का सह-शिक्षा, अंग्रेजी माध्यम CBSE सीनियर सेकेंडरी स्कूल है। इसका प्रबंधन Hari Om Education & Social Welfare Society करती है।",
     category: "About"
+  },
+  {
+    keywords: ["stream", "streams", "science", "commerce", "humanities", "arts", "pcm", "pcb", "class 11", "class 12", "11th", "12th"],
+    question: ["senior secondary streams"],
+    answer: "Senior Secondary (Classes 11-12) offers Science (PCM/PCB), Commerce and Humanities. The school website also lists NEET, JEE and NDA coaching. Please contact the school to confirm current subject combinations and availability.\nकक्षा 11-12 में Science (PCM/PCB), Commerce और Humanities streams उपलब्ध हैं। वेबसाइट पर NEET, JEE और NDA coaching का भी उल्लेख है। विषयों और उपलब्धता की पुष्टि स्कूल से करें।",
+    category: "Senior Secondary"
+  },
+  {
+    keywords: ["nursery", "ukg", "lkg", "pre primary", "preprimary", "age nursery", "age limit"],
+    question: ["pre-primary"],
+    answer: "Pre-Primary includes Nursery to UKG for the 3-6 years age group. The programme uses play-based activities, phonics, early literacy, numeracy activities, creative arts, music, storytelling and outdoor play.\nPre-Primary में Nursery से UKG तक कक्षाएँ हैं। वेबसाइट पर आयु समूह 3-6 वर्ष दिया गया है। पढ़ाई में play-based activities, phonics, शुरुआती भाषा और गणित, कला, संगीत और outdoor play शामिल हैं।",
+    category: "Pre-Primary"
+  },
+  {
+    keywords: ["primary", "class 1", "class 2", "class 3", "class 4", "class 5"],
+    question: ["primary classes"],
+    answer: "Primary covers Classes 1-5. The website lists English, Hindi, Mathematics, EVS, computer basics, general knowledge, value education, art, music, physical education, yoga and library reading.\nPrimary में कक्षा 1-5 शामिल हैं। विषयों और गतिविधियों में English, Hindi, Mathematics, EVS, computer basics, art, music, yoga और library reading शामिल हैं।",
+    category: "Primary"
+  },
+  {
+    keywords: ["middle school", "class 6", "class 7", "class 8", "olympiad", "ntse"],
+    question: ["middle school"],
+    answer: "Middle School covers Classes 6-8. The website lists Physics, Chemistry, Biology, Social Science, Sanskrit/French, advanced Mathematics, science and computer labs, Olympiad/NTSE preparation, life skills and student clubs.\nMiddle School में कक्षा 6-8 शामिल हैं। वेबसाइट पर Science, Social Science, Sanskrit/French, Maths, labs, Olympiad/NTSE preparation और student clubs का उल्लेख है।",
+    category: "Middle School"
+  },
+  {
+    keywords: ["secondary", "class 9", "class 10", "board exam", "pre board", "career counselling"],
+    question: ["secondary classes"],
+    answer: "Secondary covers Classes 9-10, with CBSE board preparation, regular tests and pre-boards, practical work, career counselling, remedial classes and doubt-clearing sessions.\nSecondary में कक्षा 9-10 शामिल हैं। वेबसाइट पर CBSE board preparation, tests, pre-boards, practical work, career counselling और doubt-clearing sessions का उल्लेख है।",
+    category: "Secondary"
+  },
+  {
+    keywords: ["smart classroom", "smart board", "projector", "digital classroom", "classrooms"],
+    question: ["smart classrooms"],
+    answer: "The Facilities page lists 60+ digitally equipped classrooms with interactive smart boards, projectors and high-speed internet for blended learning.\nFacilities page के अनुसार स्कूल में 60+ digital classrooms हैं, जिनमें interactive smart boards, projectors और high-speed internet है।",
+    category: "Smart Classrooms"
+  },
+  {
+    keywords: ["science lab", "physics lab", "chemistry lab", "biology lab", "laboratory", "laboratories"],
+    question: ["science laboratories"],
+    answer: "The school website lists Physics, Chemistry and Biology laboratories with modern apparatus, safety equipment and separate preparation rooms.\nस्कूल की वेबसाइट पर Physics, Chemistry और Biology labs का उल्लेख है, जिनमें modern apparatus, safety equipment और अलग preparation rooms हैं।",
+    category: "Science Labs"
+  },
+  {
+    keywords: ["library", "books", "digital library", "ebook", "e book"],
+    question: ["library"],
+    answer: "The Facilities page lists a digital library with 15,000+ books, e-books, journals and digital resources, along with reading zones and research corners.\nFacilities page के अनुसार digital library में 15,000+ books, e-books, journals और digital resources हैं।",
+    category: "Library"
+  },
+  {
+    keywords: ["sports", "cricket", "football", "basketball", "badminton", "skating", "athletics", "yoga"],
+    question: ["sports facilities"],
+    answer: "The website lists indoor activities including badminton, table tennis, chess and yoga, and outdoor facilities including cricket, football, basketball, athletics and skating.\nवेबसाइट पर indoor sports में badminton, table tennis, chess और yoga तथा outdoor sports में cricket, football, basketball, athletics और skating का उल्लेख है।",
+    category: "Sports"
+  },
+  {
+    keywords: ["transport", "bus", "school bus", "route", "gps"],
+    question: ["transport"],
+    answer: "The Facilities page describes GPS-enabled school buses with CCTV, female attendants, speed governors and a parent tracking app, covering 30+ routes. Contact the school to confirm routes and availability for your area.\nFacilities page के अनुसार GPS-enabled buses में CCTV, female attendants, speed governors और parent tracking app है। वेबसाइट पर 30+ routes का उल्लेख है। अपने क्षेत्र के route की पुष्टि स्कूल से करें।",
+    category: "Transport"
+  },
+  {
+    keywords: ["medical", "nurse", "doctor", "infirmary", "health", "counsellor", "counseling", "counselling"],
+    question: ["medical and counselling support"],
+    answer: "The Facilities page lists a full-time nurse, an equipped infirmary, annual health checkups and a student counsellor for wellbeing and career guidance.\nFacilities page पर full-time nurse, equipped infirmary, annual health checkups और wellbeing व career guidance के लिए student counsellor का उल्लेख है।",
+    category: "Medical"
+  },
+  {
+    keywords: ["ncc", "cadet", "senior division"],
+    question: ["NCC"],
+    answer: "The school website states that it has a Senior Division NCC wing, included in its facilities expansion since 2017.\nस्कूल की वेबसाइट के अनुसार यहाँ Senior Division NCC wing है, जो 2017 के बाद हुए facility expansion का हिस्सा है।",
+    category: "NCC"
+  },
+  {
+    keywords: ["admission process", "admission procedure", "how to apply", "documents", "registration form", "admission steps"],
+    question: ["admission process"],
+    answer: "For 2026-27, the Admissions page describes these steps: submit the online enquiry/registration form or visit the campus; attend an age-appropriate interaction/assessment (Class 6+ includes a written English and Math assessment); selected candidates are informed of the result in 3-5 working days; then complete fee payment within 7 days of the offer. Please confirm current requirements with the school.\n2026-27 admission के लिए Admissions page पर enquiry/registration, age-appropriate interaction/assessment (कक्षा 6+ के लिए English और Maths का written assessment), 3-5 working days में result communication और offer के 7 दिनों के भीतर fee payment के steps दिए गए हैं। वर्तमान नियम स्कूल से confirm करें।",
+    category: "Admission Process"
+  },
+  {
+    keywords: ["fee", "fees", "fee structure", "fees kitni", "फीस", "शुल्क", "tuition fee"],
+    question: ["fees"],
+    answer: "The website does not publish a fee amount or complete fee structure. Please contact the school office at +91-1746-250100 or info@balvikasglobalschool.com for the latest details.\nवेबसाइट पर फीस की राशि या पूरा fee structure उपलब्ध नहीं है। नवीनतम जानकारी के लिए +91-1746-250100 पर कॉल करें या info@balvikasglobalschool.com पर ईमेल करें।",
+    category: "Fees"
+  },
+  {
+    keywords: ["office hours", "office timing", "school office", "sunday", "saturday timing"],
+    question: ["office hours"],
+    answer: "The Contact page lists office hours as Monday-Friday, 8:00 AM-4:00 PM; Saturday, 9:00 AM-1:00 PM; Sunday closed. These are office hours, so please confirm class timings separately.\nContact page के अनुसार office hours सोमवार-शुक्रवार 8:00 AM-4:00 PM, शनिवार 9:00 AM-1:00 PM और रविवार बंद हैं। ये office timings हैं; class timings अलग से confirm करें।",
+    category: "Office Hours"
+  },
+  {
+    keywords: ["phone", "mobile", "call", "contact number", "telephone", "संपर्क", "फोन"],
+    question: ["contact"],
+    answer: "You can contact Bal Vikas Global School at +91-1746-250100 or email info@balvikasglobalschool.com. The Admissions page also lists admissions@balvikasglobalschool.com.\nस्कूल से +91-1746-250100 पर संपर्क करें या info@balvikasglobalschool.com पर ईमेल करें। Admissions के लिए admissions@balvikasglobalschool.com भी दिया गया है।",
+    category: "Contact"
   }
 ];
 
