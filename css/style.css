@@ -2980,3 +2980,14 @@ section[id], div[id] { scroll-margin-top: 96px; }
   height: 25px;
   display: block;
 }
+
+
+/* Compact Since 2017 badge */
+.about-experience .experience-number {
+  font-size: 0.72rem !important;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+.about-experience {
+  padding: 10px 16px;
+}
