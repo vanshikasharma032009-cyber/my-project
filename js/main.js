@@ -565,10 +565,10 @@ function initFloatingSocialLinks() {
   links.setAttribute('aria-label', 'Follow Bal Vikas Global School');
 
   links.innerHTML = `
-    <a class="floating-social-link floating-social-youtube" href="https://www.youtube.com/@balvikasglobalschool" target="_blank" rel="noopener noreferrer" aria-label="Visit Bal Vikas Global School on YouTube" title="YouTube">
+    <a class="floating-social-link floating-social-youtube" href="https://www.youtube.com/@balvikasglobalschool" target="_blank" rel="noopener noreferrer" aria-label="Visit Bal Vikas Global School on YouTube" title="YouTube"><span class="seo-link-label">Visit Bal Vikas Global School on YouTube</span>
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="2.5" y="5.25" width="19" height="13.5" rx="4" fill="#fff"/><path d="M10 8.6 16 12l-6 3.4V8.6Z" fill="#FF0033"/></svg>
     </a>
-    <a class="floating-social-link floating-social-facebook" href="https://www.facebook.com/balvikasglobalschoolkaithal/" target="_blank" rel="noopener noreferrer" aria-label="Visit Bal Vikas Global School on Facebook" title="Facebook">
+    <a class="floating-social-link floating-social-facebook" href="https://www.facebook.com/balvikasglobalschoolkaithal/" target="_blank" rel="noopener noreferrer" aria-label="Visit Bal Vikas Global School on Facebook" title="Facebook"><span class="seo-link-label">Visit Bal Vikas Global School on Facebook</span>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.5 21v-8h2.7l.4-3.1h-3.1v-2c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.1H7.3V13h2.8v8h3.4z"/></svg>
     </a>
   `;
