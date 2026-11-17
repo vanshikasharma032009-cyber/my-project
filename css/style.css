@@ -2,8 +2,8 @@
   --primary-dark: #1B4F72;
   --primary: #2E86C1;
   --primary-light: #3498DB;
-  --accent: #F39C12;
-  --accent-dark: #E67E22;
+  --accent: #2f853d;
+  --accent-dark: #246b35;
   --white: #FFFFFF;
   --light-gray: #F8F9FA;
   --medium-gray: #E9ECEF;
@@ -116,7 +116,7 @@ ul {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  background: #2f853d;
   color: var(--white);
   box-shadow: var(--shadow-md);
 }
