@@ -2594,7 +2594,7 @@ ul {
   position: relative;
   overflow: hidden;
   padding-top: 72px;
-  background: linear-gradient(135deg, var(--primary-dark), var(--primary) 55%, var(--primary-dark));
+  background: linear-gradient(135deg, #102f23, #174b33 60%, #103424) !important;
 }
 
 .footer::before {
@@ -2945,3 +2945,6 @@ section[id], div[id] { scroll-margin-top: 96px; }
   white-space: nowrap !important;
   border: 0 !important;
 }
+
+/* Vercel footer colour sync: match Render green footer */
+.footer { background: linear-gradient(135deg, #102f23, #174b33 60%, #103424) !important; }
