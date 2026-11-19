@@ -3033,3 +3033,36 @@ section[id], div[id] { scroll-margin-top: 96px; }
     transform: none;
   }
 }
+
+
+/* Gallery photos: show the complete original image clearly without cropping */
+.gallery-photo-wrapper {
+  height: clamp(190px, 22vw, 270px);
+  padding: 10px;
+  background: #f4f7f4;
+}
+.gallery-photo-card .gallery-photo-link {
+  background: #f4f7f4;
+}
+.gallery-photo-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  image-rendering: auto;
+  transform: none !important;
+}
+.gallery-photo-card:hover .gallery-photo-wrapper img {
+  transform: none !important;
+}
+.gallery-marquee-single-item {
+  background: #f4f7f4;
+}
+.gallery-marquee-single-item img {
+  object-fit: contain;
+  object-position: center;
+  image-rendering: auto;
+}
+@media (max-width: 768px) {
+  .gallery-photo-wrapper { height: 190px; }
+}
