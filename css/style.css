@@ -2991,3 +2991,45 @@ section[id], div[id] { scroll-margin-top: 96px; }
     transform: none;
   }
 }
+
+
+/* Contact page: match the Facilities campus-photo banner with a gentle building marquee */
+.contact-page-header {
+  height: 330px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.contact-page-header .page-header-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+.contact-page-header .page-header-bg img {
+  display: block;
+  width: 108%;
+  max-width: none;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  animation: contactBuildingMarquee 28s ease-in-out infinite alternate;
+  will-change: transform;
+}
+.contact-page-header .page-header-overlay {
+  z-index: 1;
+}
+.contact-page-header .page-header-content {
+  position: relative;
+  z-index: 2;
+}
+@keyframes contactBuildingMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-7%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .contact-page-header .page-header-bg img {
+    animation: none;
+    transform: none;
+  }
+}
