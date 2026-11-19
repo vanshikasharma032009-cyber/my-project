@@ -2968,3 +2968,26 @@ section[id], div[id] { scroll-margin-top: 96px; }
 
 /* Vercel footer colour sync: match Render green footer */
 .footer { background: linear-gradient(135deg, #102f23, #174b33 60%, #103424) !important; }
+
+
+/* Independent slow marquee motion for the school building in the home hero */
+.home-page .hero-bg img {
+  position: relative;
+  left: -4%;
+  width: 108%;
+  max-width: none;
+  animation: heroBuildingMarquee 28s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes heroBuildingMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-7%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-page .hero-bg img {
+    animation: none;
+    transform: none;
+  }
+}
