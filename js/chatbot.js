@@ -470,7 +470,7 @@ class Chatbot {
       pustakalaya: 'library', kitaab: 'books',
       principal: 'principal', pradhanacharya: 'principal'
     };
-    const expandedTerms = baseNormalized.split(/\\s+/).map(word => aliases[word] || '').filter(Boolean);
+    const expandedTerms = baseNormalized.split(/\s+/).map(word => aliases[word] || '').filter(Boolean);
     const normalized = [baseNormalized, ...expandedTerms].join(' ');
 
     // Handle greetings as questions too (not only the automatic welcome message).
