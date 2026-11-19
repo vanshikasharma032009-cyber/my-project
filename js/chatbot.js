@@ -452,7 +452,26 @@ class Chatbot {
   }
 
   findAnswer(userMessage) {
-    const normalized = this.normalizeText(userMessage);
+    const latestUserMessages = this.messages.filter(entry => entry.role === 'user').slice(-2);
+    const incomingText = this.normalizeText(userMessage);
+    const isFollowUp = /^(aur|aur batao|more|tell me more|and|what about|uske baare mein|iske baare mein|और बताओ|और जानकारी|उसके बारे में|इसके बारे में)$/.test(incomingText);
+    const effectiveMessage = isFollowUp && latestUserMessages.length > 1
+      ? latestUserMessages[0].content
+      : userMessage;
+    const baseNormalized = this.normalizeText(effectiveMessage);
+    const aliases = {
+      dakhila: 'admission', daakhila: 'admission', pravesh: 'admission',
+      shulk: 'fees', fee: 'fees', kitni: 'fees', kitna: 'fees', kitne: 'fees',
+      paisa: 'fees', paise: 'fees', rupaye: 'fees',
+      samay: 'timing', samay: 'time', kab: 'timing',
+      kahan: 'address', kaha: 'address', pata: 'address', location: 'address',
+      suvidha: 'facilities', suvidhaye: 'facilities',
+      khel: 'sports', bus: 'transport', gaadi: 'transport',
+      pustakalaya: 'library', kitaab: 'books',
+      principal: 'principal', pradhanacharya: 'principal'
+    };
+    const expandedTerms = baseNormalized.split(/\\s+/).map(word => aliases[word] || '').filter(Boolean);
+    const normalized = [baseNormalized, ...expandedTerms].join(' ');
 
     // Handle greetings as questions too (not only the automatic welcome message).
     if (/^(hi|hello|hey|namaste|namaskar|hii|helo|नमस्ते|नमस्कार)(\\s|$)/u.test(normalized)) {
